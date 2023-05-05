@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Информация о книге</title>
+    <style>
+        form {
+            max-width: 300px;
+            text-align: center;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #edit {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #edit:hover {
+            background-color: #3e8e41;
+        }
+
+        #set {
+            background-color: #efc50a;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #set:hover {
+            background-color: #917a0a;
+        }
+
+        #back {
+            padding: 5px 10px;
+            background-color: #208ff3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #back:hover {
+            background-color: #0c5ee0;
+        }
+
+        #delete {
+            padding: 5px 10px;
+            background-color: #cb1016;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #delete:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+
+<form th:method="GET" th:action="@{/books/__${book.bookId}__/edit}" th:object="${book}">
+    <p th:text="${book.getBookName()} + ', ' + ${book.getAuthor()} + ', ' + ${book.getYear()}"></p>
+
+
+
+    <button type="submit" id="edit">Редактировать</button>
+    <button type="button" id="delete" onclick="deleteBook()">Удалить</button>
+    <br>
+
+    <br>
+    <a th:href="@{/books}" class="btn-link" id="back">Назад</a>
+</form>
+
+<div th:if="${owner}">
+    <form th:method="PATCH" th:action="@{/books/{id}/release(id=${book.getBookId()})}">
+        <span>Книга сейчас у: </span> <span th:text="${owner.getFullName()}">Person Name</span>
+        <br>
+        <br>
+        <input type="submit" value="Освободить книгу"/>
+    </form>
+</div>
+
+<div th:if="${people}">
+    <form th:method="PATCH" th:action="@{/books/{id}/assign(id=${book.getBookId()})}">
+        <span>Эта книга свободна. Кому назначить ее?</span>
+        <label for="person">Выберите человека</label>
+        <select th:object="${person}" th:field="*{personId}" id="person">
+            <option th:each="person : ${people}" th:value="${person.getPersonId()}" th:text="${person.getFullName()}">
+            </option>
+        </select>
+        <br>
+        <br>
+        <input type="submit" value="Назначить книгу"/>
+    </form>
+</div>
+
+<script>
+    function deleteBook() {
+        if (confirm("Вы действительно хотите удалить эту книгу?")) {
+            var form = document.createElement("form");
+            form.setAttribute("method", "post");
+            form.setAttribute("th:action", "@{/books/__${book.bookId}__}");
+            form.setAttribute("hidden", "true");
+
+            var input = document.createElement("input");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("name", "_method");
+            input.setAttribute("value", "delete");
+
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
+
+</body>
+</html>

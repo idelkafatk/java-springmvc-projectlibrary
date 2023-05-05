@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Все книги</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #F2F2F2;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 36px;
+      color: #444;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      background-color: #EEE;
+      padding: 10px;
+    }
+    a {
+      text-decoration: none;
+      font-size: 24px;
+      color: #333;
+      margin-right: 20px;
+      transition: all 0.2s ease-in-out;
+    }
+    a:hover {
+      color: #f18f15;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #FFF;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #EEE;
+    }
+    tr:nth-child(even) {
+      background-color: #F2F2F2;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    label, input {
+      display: block;
+      margin-bottom: 10px;
+    }
+    input[type="submit"] {
+      background-color: #333;
+      color: #FFF;
+      border: none;
+      padding: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+    input[type="submit"]:hover {
+      background-color: #666;
+    }
+
+    #add {
+      padding: 5px 10px;
+      background-color: #f18f15;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #add:hover {
+      background-color: #b64d03;
+    }
+
+    #back {
+      padding: 5px 10px;
+      background-color: #208ff3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #back:hover {
+      background-color: #0c5ee0;
+    }
+
+  </style>
+</head>
+<body>
+<div class="container">
+  <div th:each="book : ${books}">
+    <a th:href="@{/books/__${book.bookId}__}" class="book-link">
+      <div style="padding: 10px; border: 1px solid #ccc; margin-bottom: 10px;"
+           th:text="${book.getBookName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">
+        book
+      </div>
+    </a>
+  </div>
+  <br>
+  <a th:href="@{/books/new}" class="btn-link" id="add">Добавить книгу</a>
+  <a th:href="@{/}" class="btn-link" id="back">На главную</a>
+</div>
+</body>
+</html>

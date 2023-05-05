@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактировать данные</title>
+    <style>
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #3e8e41;
+        }
+
+        #back {
+            padding: 5px 10px;
+            background-color: #208ff3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #back:hover {
+            background-color: #0c5ee0;
+        }
+
+        .error {
+            color: red;
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<form th:method="PATCH" th:action="@{/books/__${book.bookId}__}" th:object="${book}">
+    <label for="bookName">Введите название книги:</label>
+    <input type="text" th:field="*{bookName}" id="bookName"/>
+    <div class="error" th:if="${#fields.hasErrors('bookName')}" th:errors="*{bookName}"></div>
+
+    <label for="author">Введите имя и фамилию автора:</label>
+    <input type="text" th:field="*{author}" id="author" />
+    <div class="error" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></div>
+
+    <label for="year">Введите год выпуска:</label>
+    <input type="number" th:field="*{year}" id="year" required/>
+    <div class="error" th:if="${#fields.hasErrors('year')}" th:errors="*{year}"></div>
+
+    <input type="submit" value="Сохранить"/>
+    <a th:href="@{/books/__${book.bookId}__}" class="btn-link" id="back">Назад</a>
+
+</form>
+
+</body>
+</html>
