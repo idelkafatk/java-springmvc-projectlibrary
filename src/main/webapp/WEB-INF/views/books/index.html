@@ -84,6 +84,20 @@
       background-color: #b64d03;
     }
 
+    #search {
+      padding: 5px 10px;
+      background-color: #525cf3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #search:hover {
+      background-color: #1532ea;
+    }
+
     #back {
       padding: 5px 10px;
       background-color: #208ff3;
@@ -96,6 +110,10 @@
 
     #back:hover {
       background-color: #0c5ee0;
+    }
+
+    .btn-link {
+      text-decoration: none;
     }
 
   </style>
@@ -112,6 +130,7 @@
   </div>
   <br>
   <a th:href="@{/books/new}" class="btn-link" id="add">Добавить книгу</a>
+  <a th:href="@{/books/search}" class="btn-link" id="search">Поиск книги</a>
   <a th:href="@{/}" class="btn-link" id="back">На главную</a>
 </div>
 </body>

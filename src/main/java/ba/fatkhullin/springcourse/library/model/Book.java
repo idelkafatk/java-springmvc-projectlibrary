@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotEmpty;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "Book")
 public class Book {
@@ -27,6 +29,13 @@ public class Book {
     @Max(value = 2023, message = "Год выпуска книги должен быть от 0 до 2023")
     @Column(name = "year")
     private int year;
+
+    @Column(name = "assigned_at")
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date assignedAt;
+
+    @Transient
+    private boolean missedBookReturn = false;
 
     public Book() {
     }
@@ -76,5 +85,21 @@ public class Book {
 
     public void setOwner(Person owner) {
         this.owner = owner;
+    }
+
+    public Date getAssignedAt() {
+        return assignedAt;
+    }
+
+    public void setAssignedAt(Date assignedAt) {
+        this.assignedAt = assignedAt;
+    }
+
+    public boolean isMissedBookReturn() {
+        return missedBookReturn;
+    }
+
+    public void setMissedBookReturn(boolean missedBookReturn) {
+        this.missedBookReturn = missedBookReturn;
     }
 }

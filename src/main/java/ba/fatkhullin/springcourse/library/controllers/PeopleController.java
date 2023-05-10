@@ -1,6 +1,5 @@
 package ba.fatkhullin.springcourse.library.controllers;
 
-import ba.fatkhullin.springcourse.library.dao.BookDAO;
 import ba.fatkhullin.springcourse.library.model.Person;
 import ba.fatkhullin.springcourse.library.services.BooksService;
 import ba.fatkhullin.springcourse.library.services.PeopleService;

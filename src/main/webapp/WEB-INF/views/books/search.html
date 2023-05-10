@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Добавить читателя</title>
+    <title>Поиск книг</title>
     <style>
         form {
             max-width: 500px;
@@ -64,12 +64,6 @@
             background-color: #0c5ee0;
         }
 
-        .error {
-            color: red;
-            margin-top: 5px;
-            margin-bottom: 20px;
-        }
-
         .btn-link {
             text-decoration: none;
         }
@@ -77,17 +71,28 @@
 </head>
 <body>
 
-<form th:method="POST" th:action="@{/people}" th:object="${person}">
-    <label for="fullName">Введите ФИО:</label>
-    <input type="text" th:field="*{fullName}" id="fullName"/>
-    <div class="error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+<form method="GET" th:action="@{/books/search}">
+    <label for="searchQuery">Введите поисковой запрос:</label>
+    <input type="text" name="searchQuery" id="searchQuery" required/>
+    <input type="submit" value="Поиск"/>
+    <a th:href="@{/books}" class="btn-link" id="back">Назад</a>
 
-    <label for="yearOfBirth">Введите год рождения:</label>
-    <input type="number" th:field="*{yearOfBirth}" id="yearOfBirth" required/>
-    <div class="error" th:if="${#fields.hasErrors('yearOfBirth')}" th:errors="*{yearOfBirth}"></div>
+    <div th:if="${!foundBooks.isEmpty()}">
+        <h4 th:text="${'Найдено: ' + foundBooks.size() }"></h4>
+        <div th:each="book : ${foundBooks}">
+            <p th:text="${book.bookName + ', ' + book.author + ', ' + book.year}"></p>
+            <p th:if="${book.owner != null}" th:text="'Книга у: ' + ${book.owner.fullName}">
+            </p>
 
-    <input type="submit" value="Сохранить"/>
-    <a th:href="@{/people}" class="btn-link" id="back">Назад</a>
+            <p th:if="${book.owner == null}" th:text="${'Книга свободна'}"></p>
+            <hr th:if="${foundBooks.get(foundBooks.size() - 1) != book}">
+        </div>
+    </div>
+
+    <div th:if="${foundBooks.isEmpty()}">
+        <br>
+        <h4>Книг не найдено</h4>
+    </div>
 </form>
 
 </body>

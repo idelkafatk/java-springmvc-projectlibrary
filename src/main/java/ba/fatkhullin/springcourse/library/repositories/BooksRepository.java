@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface BooksRepository extends JpaRepository<Book, Integer> {
     List<Book> findBooksByOwner(Person owner);
+
+    List<Book> findBooksByBookNameStartingWithIgnoreCase(String name);
 }

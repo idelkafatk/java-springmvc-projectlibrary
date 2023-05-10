@@ -24,9 +24,11 @@ public class BookController {
     }
 
     @GetMapping()
-    public String showBooks(Model model) {
+    public String showBooks(Model model, @RequestParam(name = "page", required = false) Integer page,
+                            @RequestParam(name = "books_per_page", required = false) Integer booksPerPage,
+                            @RequestParam(name = "sort_by_year", required = false) boolean sortByYear) {
 
-        model.addAttribute("books", booksService.showBooks());
+        model.addAttribute("books", booksService.showBooks(page, booksPerPage, sortByYear));
 
         return "books/index";
     }
@@ -71,6 +73,16 @@ public class BookController {
         model.addAttribute("book", booksService.showBook(bookID));
 
         return "books/edit";
+    }
+
+    @GetMapping("search")
+    public String search(Model model, @RequestParam(name = "searchQuery", required = false) String name) {
+
+        if(name != null) {
+            model.addAttribute("foundBooks", booksService.searchBooks(name));
+        }
+
+        return "books/search";
     }
 
     @PatchMapping("/{bookId}")

@@ -69,6 +69,10 @@
         #delete:hover {
             background-color: darkred;
         }
+
+        .btn-link {
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -84,7 +88,8 @@
         <hr>
         <h3>Книги:</h3>
         <span th:each="book : ${books}">
-            <p th:text="${book.bookName + ', ' + book.author + ', ' + book.year}"></p>
+            <p th:text="${book.bookName + ', ' + book.author + ', ' + book.year}"
+               th:style="${book.isMissedBookReturn() } ? 'color: red;'"></p>
         </span>
     </div>
 
@@ -96,15 +101,6 @@
     <br>
     <a th:href="@{/people}" class="btn-link" id="back">Назад</a>
 </form>
-
-<div th:if="${owner}">
-    <form th:method="PATCH" th:action="@{/books/{id}/release(id=${book.getBookId()})}">
-        <span>Книга сейчас у: </span> <span th:text="${owner.getFullName()}">Person Name</span>
-        <br>
-        <br>
-        <input type="submit" value="Освободить книгу"/>
-    </form>
-</div>
 
 <script>
     function deletePerson() {

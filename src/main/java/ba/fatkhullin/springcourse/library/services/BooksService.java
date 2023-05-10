@@ -4,10 +4,15 @@ import ba.fatkhullin.springcourse.library.model.Book;
 import ba.fatkhullin.springcourse.library.model.Person;
 import ba.fatkhullin.springcourse.library.repositories.BooksRepository;
 import ba.fatkhullin.springcourse.library.repositories.PeopleRepository;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +28,18 @@ public class BooksService {
         this.peopleRepository = peopleRepository;
     }
 
-    public List<Book> showBooks() {
-        return booksRepository.findAll();
+    public List<Book> showBooks(Integer page, Integer booksPerPage, boolean sortByYear) {
+        if (sortByYear && page != null && booksPerPage != null) {
+            return booksRepository.
+                    findAll(PageRequest.of(page - 1, booksPerPage, Sort.by("year")))
+                    .getContent();
+        } else if (sortByYear){
+            return booksRepository.findAll(Sort.by("year"));
+        } else if (page != null && booksPerPage != null){
+            return booksRepository.findAll(PageRequest.of(page - 1, booksPerPage)).getContent();
+        } else {
+            return booksRepository.findAll();
+        }
     }
 
     public Book showBook(int id) {
@@ -51,9 +66,21 @@ public class BooksService {
         Optional<Person> person = peopleRepository.findById(owner);
         if (person.isPresent()) {
             Person bookOwner = person.get();
+            Hibernate.initialize(bookOwner.getBooks());
+
+            for (Book book : bookOwner.getBooks()) {
+                long currentDateMillis = new Date().getTime();
+                long assignedAtMillis = book.getAssignedAt().getTime();
+                long daysSinceAssigned = (currentDateMillis - assignedAtMillis) / (1000 * 60 * 60 * 24);
+
+                if (daysSinceAssigned > 10) {
+                    book.setMissedBookReturn(true);
+                }
+            }
+
             return booksRepository.findBooksByOwner(bookOwner);
         } else {
-            throw new RuntimeException();
+            return Collections.emptyList();
         }
     }
 
@@ -63,8 +90,8 @@ public class BooksService {
         if (optionalBook.isPresent()) {
             Book bookToBeUpdated = optionalBook.get();
             bookToBeUpdated.setOwner(selectedPerson);
+            bookToBeUpdated.setAssignedAt(new Date());
 
-            booksRepository.save(bookToBeUpdated);
         } else {
             throw new IllegalArgumentException("Книга не найдена");
         }
@@ -76,20 +103,18 @@ public class BooksService {
         if (optionalBook.isPresent()) {
             Book bookToBeUpdated = optionalBook.get();
             bookToBeUpdated.setOwner(null);
-
-            booksRepository.save(bookToBeUpdated);
+            bookToBeUpdated.setAssignedAt(null);
         } else {
             throw new IllegalArgumentException("Книга не найдена");
         }
     }
 
     public Person getBookOwner(int bookId) {
-        Optional<Book> optionalBook = booksRepository.findById(bookId);
-        if (optionalBook.isPresent()) {
-            Book book = optionalBook.get();
-            return book.getOwner();
-        } else {
-            return null;
-        }
+        return booksRepository.findById(bookId).map(Book::getOwner).orElse(null);
+    }
+
+    public List<Book> searchBooks(String name) {
+
+        return booksRepository.findBooksByBookNameStartingWithIgnoreCase(name);
     }
 }
